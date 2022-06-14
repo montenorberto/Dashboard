@@ -1,0 +1,109 @@
+---
+title : " Suas Açoes "
+output :
+flexdashboard::flex_dashboard :
+orientation : rows
+vertical_layout : scroll
+runtime : shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyquant)
+library(dplyr)
+library(ggplolt2)
+library(plotly)
+library(DT)
+Coluna {.sidebar}
+-------------------------------------------------- ----------
+
+```{r}
+selectInput(
+" ação ", label = "Escolha sua ação",
+choices = c(
+"VALE3", "BRSP4", "BTOW3", "RENT3", "GGBR4",
+"NTCO3", "CIEL3", "SANB11", "TOTS3", "SULA11"
+))
+
+selecTInput(
+"periodo", label = "Escolha o periodo",
+choices = c("1M", "6M", "1A", "10A")
+)
+```
+colours = c(
+"VALE3" = "green", "BRSP4" = "blue", "BTOW3" = "red", "RENT3" = "grey", 
+"GGBR4" = "pink", "NTCO3" = "orange", "CIEL3" = "black", "SANB11" = "purple",
+"TOTS3" = "cyan", "SULA11' = "yellow"
+)
+
+Row {data-width=500}
+-------------------------------------------------- ----------
+
+### Tendência
+
+```{r}
+renderPlotly({
+periodo <_ Sys.Date() = filer(tabela_periodo, periodo
+   == input$periodo)$dias
+
+prices %>%
+     filter(date >= periodo, symbol == input$acao) %>%
+     ggplot() +
+     aes(x= date. y = adjusted, color = symbol) +
+     geom_lime() +
+     scale_color_manual(values = colours) +
+     ggtitle(label = input$acao) +
+     theme(
+       panel.background = element_blank(),
+       plot.title = element_text(size=22)
+       legend.position = "nome"
+
+)
+})
+
+### Todas as tendências
+
+```{r}
+renderPlotly({
+periodo <_ Sys.Date() = filer(tabela_periodo, periodo
+   == input$periodo)$dias
+
+prices %>%
+     filter(date >= periodo) %>%
+     ggplot() +
+     aes(x= date. y = adjusted, color = symbol) +
+     geom_lime(size = 1.1) +
+     scale_color_manual(values = colours) +
+     labs(x = "", y = "cotação", color = "Ação") +
+     theme(panel.background = element_blank())
+})
+```
+Row {data-width=500}
+
+### cotações 
+mutate(across(where( is.double ), round , digits = 2 )) % > %
+
+```{r}
+renderPlotly({
+periodo <_ Sys.Date() = filer(tabela_periodo, periodo
+   == input$periodo)$dias
+
+prices %>%
+filter(date >= periodo, symbol == inprut$acao) %>%
+mutste(across(where(is.double), round, digits = 2)) %>%
+arrange(dasc(date)) %>%
+rename(
+Ação = symbol,
+Data = date,
+Abertura = open,
+Máximo = high,
+Mínimo =  low
+Fechamento = close,
+Volume = volume,
+Ajustado = adjusted
+) %>%
+datatable(rownames = FALSE)
+})
+
+
+
